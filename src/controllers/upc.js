@@ -9,8 +9,12 @@ const getAllUPC = (req, res) => {
     })
 }
 
-const getOneUPC = (req, res) => {
+const getOneUPC = (req, res, next) => {
   const data = model.getOneUPC(req.params.code)
+
+  if (data.errors) {
+    return next({ status: 404, message: `UPC not found`, errors: data.errors })
+  }
 
   data
     .then(result => {
@@ -18,8 +22,12 @@ const getOneUPC = (req, res) => {
     })
 }
 
-const addUPC = (req, res) => {
+const addUPC = (req, res, next) => {
   const data = model.addUPC(req.body)
+
+  if (data.errors) {
+    return next({ status: 400, message: `Invalid request`, errors: data.errors })
+  }
 
   data
     .then(result => {
