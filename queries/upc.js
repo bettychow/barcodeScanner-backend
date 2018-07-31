@@ -2,7 +2,7 @@ const knex = require('./db')
 
 const getAllUPC = () => {
   return knex('upc')
-    .select('*')
+    .select('product_name', 'upc')
 }
 
 const getOneUPC = (code) => {
@@ -12,4 +12,21 @@ const getOneUPC = (code) => {
     .returning('*')
 }
 
-module.exports = { getAllUPC, getOneUPC }
+const addUPC = (body) => {
+  return knex('upc')
+    .where('upc', body.upc)
+    .first()
+    .then(found => {
+      if(found) {
+        return 'UPC already exists!'
+      }
+      else{
+        return knex
+          .insert(body)
+          .into('upc')
+          .returning('*')
+      }
+    })
+}
+
+module.exports = { getAllUPC, getOneUPC, addUPC }
